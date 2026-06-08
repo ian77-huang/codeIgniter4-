@@ -32,7 +32,6 @@ class AuthService
         $user = $this->getUser($account);
 
         if ($user) {
-            // 帳號或密碼錯誤
             throw new \Exception(lang('Validation.users.errorCredentials3'), 401);
         }
 

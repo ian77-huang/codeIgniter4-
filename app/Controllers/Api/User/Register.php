@@ -25,17 +25,15 @@ class Register extends BaseController
 
             $authService = new AuthService();
 
-            $user = $authService->getUser($account);;
+            $user = $authService->getUser($account);
 
             if ($user) {
-                // 帳號或密碼錯誤
                 throw new \Exception(lang('Validation.users.errorCredentials3'), 401);
             }
 
             $insertId = $authService->register($account, $password);
 
             if ($insertId) {
-                // 新增成功
                 $session = session();
                 $session->set([
                     'user_id'    => $insertId,
@@ -44,23 +42,28 @@ class Register extends BaseController
                 ]);
                 return $this->response->setJSON([
                     'success' => true,
-                    'message' => '登入成功',
+                    'message' => lang('Auth.message.registerSuccess'),
                     'data' => [
                         'account' => $account,
                     ],
                 ]);
             } else {
-                // 新增失敗
-                // $errors = $userModel->errors();
                 throw new \Exception(lang('Validation.server.error1'), 504);
             }
         } catch (\Throwable $e) {
+            $statusCode = $this->normalizeStatusCode($e->getCode());
+
             return $this->response
-                ->setStatusCode($e->getCode())
+                ->setStatusCode($statusCode)
                 ->setJSON([
                     'success' => false,
                     'message' => $e->getMessage(),
                 ]);
         }
+    }
+
+    private function normalizeStatusCode(int $statusCode): int
+    {
+        return ($statusCode >= 100 && $statusCode <= 599) ? $statusCode : 500;
     }
 }

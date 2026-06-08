@@ -1,22 +1,10 @@
 <?= $this->extend('layouts/frontend') ?>
 
-<?= $this->section("scripts") ?>
-<script>
-    window.appLangs = {
-        "users": {
-            "errorCredentials1": "<?= esc(lang('Validation.users.errorCredentials1'), "js") ?>",
-            "errorConfirmPassword1": "<?= esc(lang('Validation.users.errorConfirmPassword1'), "js") ?>",
-            "errorConfirmPassword2": "<?= esc(lang('Validation.users.errorConfirmPassword2'), "js") ?>",
-        }
-    };
-</script>
-<?= $this->endSection() ?>
-
 <?= $this->section('content') ?>
 <div class="card mt-5" style="width: 320px; margin: auto;">
     <div class="card-body">
         <h5 class="card-title text-center my-4"><?= lang('Auth.title.register') ?></h5>
-        <form method="post" action="/user/login" id="formRegister">
+        <form method="post" action="/api/user/register" id="formRegister">
             <div>
                 <label class="form-label"><?= lang("Auth.account") ?></label>
                 <input type="text" name="account" class="form-control" autocomplete="username">

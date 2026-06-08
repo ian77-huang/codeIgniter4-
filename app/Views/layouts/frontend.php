@@ -13,6 +13,14 @@
     <script src="/assets/js/app.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
+        window.appLangs = {
+            users: {
+                errorCredentials1: "<?= esc(lang('Validation.users.errorCredentials1'), 'js') ?>",
+                errorConfirmPassword1: "<?= esc(lang('Validation.users.errorConfirmPassword1'), 'js') ?>",
+                errorConfirmPassword2: "<?= esc(lang('Validation.users.errorConfirmPassword2'), 'js') ?>",
+            },
+        };
+
         $(() => {
             if (typeof window.app === "function") {
                 app();

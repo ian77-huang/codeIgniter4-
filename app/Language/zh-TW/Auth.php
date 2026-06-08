@@ -9,4 +9,8 @@ return [
     "account" => "帳號",
     "password" => "密碼",
     "confirmPassword" => "確認密碼",
+    "message" => [
+        "loginSuccess" => "登入成功",
+        "registerSuccess" => "註冊成功",
+    ],
 ];

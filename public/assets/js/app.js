@@ -22,7 +22,6 @@ window.app = () => {
                         type: 'POST',
                         data: $(this).serialize(),
                         success: function (response) {
-                            console.log(response);
                             if (response.success === true) {
                                 alert(response.message);
                                 window.location.reload();
@@ -133,7 +132,6 @@ window.app = () => {
         $("button[type='submit']", e).attr('disabled', !hide);
     };
     let errorMsg = (msg) => {
-        // console.log($('#errorMsg').html(msg));
         $('#errorMsg')[msg !== '' ? 'show' : 'hide']().html(msg);
     };
     let init = () => {

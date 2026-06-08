@@ -18,35 +18,31 @@ class Login extends BaseController
 
             $authService = new AuthService();
 
-            $user = $authService->getUser($account);
-
-            if ($user && password_verify($password, $user['password'])) {
-                $session = session();
-
-                $session->set([
-                    'user_id'    => $user['id'],
-                    'account'    => $user['account'],
-                    'is_logged_in' => true,
-                ]);
-
+            if ($authService->login($account, $password)) {
                 return $this->response->setJSON([
                     'success' => true,
-                    'message' => '登入成功',
+                    'message' => lang('Auth.message.loginSuccess'),
                     'data' => [
                         'account' => $account,
                     ],
                 ]);
             } else {
-                // 帳號或密碼錯誤
                 throw new \Exception(lang('Validation.users.errorCredentials2'), 401);
             }
         } catch (\Throwable $e) {
+            $statusCode = $this->normalizeStatusCode($e->getCode());
+
             return $this->response
-                ->setStatusCode($e->getCode())
+                ->setStatusCode($statusCode)
                 ->setJSON([
                     'success' => false,
                     'message' => $e->getMessage(),
                 ]);
         }
+    }
+
+    private function normalizeStatusCode(int $statusCode): int
+    {
+        return ($statusCode >= 100 && $statusCode <= 599) ? $statusCode : 500;
     }
 }
