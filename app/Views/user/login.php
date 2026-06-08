@@ -1,5 +1,15 @@
 <?= $this->extend('layouts/frontend') ?>
 
+<?= $this->section('scripts') ?>
+<script>
+    window.appCsrf = {
+        headerName: "<?= esc($csrf['headerName'], 'js') ?>",
+        tokenName: "<?= esc($csrf['tokenName'], 'js') ?>",
+        hash: "<?= esc($csrf['hash'], 'js') ?>",
+    };
+</script>
+<?= $this->endSection() ?>
+
 <?= $this->section('content') ?>
 
 <div class="card mt-5" style="width: 320px; margin: auto;">

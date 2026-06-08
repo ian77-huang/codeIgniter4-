@@ -25,6 +25,7 @@ class Login extends BaseController
                     'data' => [
                         'account' => $account,
                     ],
+                    'csrf' => $this->csrf(),
                 ]);
             } else {
                 throw new \Exception(lang('Validation.users.errorCredentials2'), 401);
@@ -37,6 +38,7 @@ class Login extends BaseController
                 ->setJSON([
                     'success' => false,
                     'message' => $e->getMessage(),
+                    'csrf' => $this->csrf(),
                 ]);
         }
     }
@@ -44,5 +46,14 @@ class Login extends BaseController
     private function normalizeStatusCode(int $statusCode): int
     {
         return ($statusCode >= 100 && $statusCode <= 599) ? $statusCode : 500;
+    }
+
+    private function csrf(): array
+    {
+        return [
+            'headerName' => csrf_header(),
+            'tokenName' => csrf_token(),
+            'hash' => csrf_hash(),
+        ];
     }
 }

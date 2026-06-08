@@ -21,7 +21,9 @@ window.app = () => {
                         url: '/api/user/login',
                         type: 'POST',
                         data: $(this).serialize(),
+                        beforeSend: csrfHeader,
                         success: function (response) {
+                            updateCsrf(response);
                             if (response.success === true) {
                                 alert(response.message);
                                 window.location.reload();
@@ -29,6 +31,7 @@ window.app = () => {
                         },
                         error: function (xhr) {
                             let response = xhr.responseJSON;
+                            updateCsrf(response);
                             if (response && !response.success) {
                                 errorMsg(response.message);
                             }
@@ -71,7 +74,9 @@ window.app = () => {
                         url: '/api/user/register',
                         type: 'POST',
                         data: $(this).serialize(),
+                        beforeSend: csrfHeader,
                         success: function (response) {
+                            updateCsrf(response);
                             if (response.success === true) {
                                 alert(response.message);
                                 window.location.reload();
@@ -79,6 +84,7 @@ window.app = () => {
                         },
                         error: function (xhr) {
                             let response = xhr.responseJSON;
+                            updateCsrf(response);
                             if (response && !response.success) {
                                 errorMsg(response.message);
                             }
@@ -130,6 +136,16 @@ window.app = () => {
     };
     let checkButtonFormSubmit = (e, hide) => {
         $("button[type='submit']", e).attr('disabled', !hide);
+    };
+    let csrfHeader = (xhr) => {
+        if (window.appCsrf?.headerName && window.appCsrf?.hash) {
+            xhr.setRequestHeader(window.appCsrf.headerName, window.appCsrf.hash);
+        }
+    };
+    let updateCsrf = (response) => {
+        if (response?.csrf) {
+            window.appCsrf = response.csrf;
+        }
     };
     let errorMsg = (msg) => {
         $('#errorMsg')[msg !== '' ? 'show' : 'hide']().html(msg);

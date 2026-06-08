@@ -46,6 +46,7 @@ class Register extends BaseController
                     'data' => [
                         'account' => $account,
                     ],
+                    'csrf' => $this->csrf(),
                 ]);
             } else {
                 throw new \Exception(lang('Validation.server.error1'), 504);
@@ -58,6 +59,7 @@ class Register extends BaseController
                 ->setJSON([
                     'success' => false,
                     'message' => $e->getMessage(),
+                    'csrf' => $this->csrf(),
                 ]);
         }
     }
@@ -65,5 +67,14 @@ class Register extends BaseController
     private function normalizeStatusCode(int $statusCode): int
     {
         return ($statusCode >= 100 && $statusCode <= 599) ? $statusCode : 500;
+    }
+
+    private function csrf(): array
+    {
+        return [
+            'headerName' => csrf_header(),
+            'tokenName' => csrf_token(),
+            'hash' => csrf_hash(),
+        ];
     }
 }

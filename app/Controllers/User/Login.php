@@ -8,6 +8,17 @@ class Login extends BaseController
 {
     public function index()
     {
-        return view('user/login');
+        return view('user/login', [
+            'csrf' => $this->csrf(),
+        ]);
+    }
+
+    private function csrf(): array
+    {
+        return [
+            'headerName' => csrf_header(),
+            'tokenName' => csrf_token(),
+            'hash' => csrf_hash(),
+        ];
     }
 }
