@@ -1,69 +1,137 @@
-# CodeIgniter 4 Application Starter
+# rbbr CodeIgniter 4 Website
 
-## What is CodeIgniter?
+這是一個以 CodeIgniter 4 建立的會員登入與註冊網站。專案目前包含前台版型、會員表單、AJAX API、Session 登入狀態，以及使用者資料表 migration。
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+## 目前功能
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+- 首頁 `/`
+- 會員登入頁 `/user/login`
+- 會員註冊頁 `/user/register`
+- 會員登出 `/user/logout`
+- 登入與註冊表單的前端驗證
+- 使用 jQuery AJAX 呼叫後端 API
+- 後端登入、註冊與錯誤訊息回傳 JSON
+- 密碼使用 `password_hash()` 加密儲存
+- 登入成功後寫入 Session：`user_id`、`account`、`is_logged_in`
+- 導覽列依登入狀態顯示登入或登出
+- 已登入使用者進入登入/註冊頁時會導回首頁
+- 繁體中文語系文字
+- `users` 資料表 migration
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+## 主要路由
 
-You can read the [user guide](https://codeigniter.com/user_guide/)
-corresponding to the latest version of the framework.
+| Method | Path | 說明 |
+| --- | --- | --- |
+| GET | `/` | 首頁 |
+| GET | `/user/login` | 登入頁 |
+| GET | `/user/register` | 註冊頁 |
+| GET | `/user/logout` | 登出並導回登入頁 |
+| POST | `/api/user/login` | 登入 API |
+| POST | `/api/user/register` | 註冊 API |
 
-## Installation & updates
+## 專案結構重點
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+```text
+app/
+  Config/Routes.php
+  Controllers/
+    Api/User/Login.php
+    Api/User/Register.php
+    User/Login.php
+    User/Register.php
+    User/Logout.php
+  Database/Migrations/
+    2026-06-07-123947_CreateUsersTable.php
+  Filters/AuthFilter.php
+  Helpers/auth_helper.php
+  Language/zh-TW/
+  Models/UserModel.php
+  Services/AuthService.php
+  Views/
+    layouts/frontend.php
+    index.php
+    user/login.php
+    user/register.php
+public/
+  assets/js/app.js
+writable/
+  database/app.sqlite
+```
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+## 資料表
 
-## Setup
+`users` table 欄位：
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+| 欄位 | 型別 | 說明 |
+| --- | --- | --- |
+| `id` | INTEGER | 主鍵，自動遞增 |
+| `account` | VARCHAR(100) | 帳號，唯一 |
+| `password` | VARCHAR(255) | 加密後密碼 |
+| `created_at` | DATETIME | 建立時間 |
+| `updated_at` | DATETIME | 更新時間 |
 
-## Important Change with index.php
+## 環境需求
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+- PHP 8.2 或以上
+- Composer
+- CodeIgniter 4.7
+- PHP extensions：`intl`、`mbstring`、`json`
+- 若使用 MySQL，需啟用 `mysqlnd`
+- 若使用 SQLite，需啟用 `sqlite3`
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+## 本機啟動
 
-**Please** read the user guide for a better explanation of how CI4 works!
+安裝套件：
 
-## Repository Management
+```bash
+composer install
+```
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
+建立環境設定：
 
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
+```bash
+cp env .env
+```
 
-## Server Requirements
+依需要調整 `.env`，例如：
 
-PHP version 8.2 or higher is required, with the following extensions installed:
+```ini
+CI_ENVIRONMENT = development
+app.baseURL = 'http://localhost:8080/'
+```
 
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
+啟動開發伺服器：
 
-> [!WARNING]
-> - The end of life date for PHP 7.4 was November 28, 2022.
-> - The end of life date for PHP 8.0 was November 26, 2023.
-> - The end of life date for PHP 8.1 was December 31, 2025.
-> - If you are still using below PHP 8.2, you should upgrade immediately.
-> - The end of life date for PHP 8.2 will be December 31, 2026.
+```bash
+php spark serve
+```
 
-Additionally, make sure that the following extensions are enabled in your PHP:
+開啟：
 
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+```text
+http://localhost:8080
+```
+
+## 資料庫
+
+專案已包含 migration：
+
+```bash
+php spark migrate
+```
+
+目前 repo 也包含 `writable/database/app.sqlite`，可作為本機練習資料庫使用。若改用 MySQL，請在 `.env` 設定 database 連線資訊。
+
+## 測試
+
+```bash
+composer test
+```
+
+## 使用流程
+
+1. 進入 `/user/register` 建立帳號。
+2. 註冊成功後系統會建立 Session 並維持登入狀態。
+3. 登入狀態下導覽列會顯示「登出」。
+4. 點擊 `/user/logout` 會清除 Session 並回到登入頁。
+5. 若已登入又進入 `/user/login` 或 `/user/register`，會自動導回首頁。
