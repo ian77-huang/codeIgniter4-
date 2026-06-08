@@ -107,6 +107,62 @@ window.app = () => {
         };
         init();
     };
+    let messageBoard = () => {
+        let init = () => {
+            bindEvent();
+        };
+        let bindEvent = () => {
+            errorMsg('');
+
+            let form = $('#formMessage');
+            if (form.length === 0) {
+                return;
+            }
+
+            form.on('submit', function (e) {
+                try {
+                    e.preventDefault();
+                    errorMsg('');
+
+                    const data = transfromData(this);
+                    validMessage(data);
+
+                    $.ajax({
+                        url: '/api/message/create',
+                        type: 'POST',
+                        data: $(this).serialize(),
+                        beforeSend: csrfHeader,
+                        success: function (response) {
+                            updateCsrf(response);
+                            if (response.success === true) {
+                                alert(response.message);
+                                window.location.reload();
+                            }
+                        },
+                        error: function (xhr) {
+                            let response = xhr.responseJSON;
+                            updateCsrf(response);
+                            if (response && !response.success) {
+                                errorMsg(response.message);
+                            }
+                        },
+                    });
+                } catch (e) {
+                    errorMsg(e);
+                }
+            }).on('input change', ':input', function () {
+                try {
+                    const data = transfromData(form);
+
+                    checkButtonFormSubmit(form, validMessage(data));
+                } catch (e) {
+                    checkButtonFormSubmit(form, false);
+                }
+            });
+            checkButtonFormSubmit(form, false);
+        };
+        init();
+    };
     let transfromData = (e) => {
         const formArray = $(e).serializeArray();
         const data = {};
@@ -134,6 +190,12 @@ window.app = () => {
         }
         return true;
     };
+    let validMessage = (data) => {
+        if (typeof data?.content === 'undefined' || $.trim(data?.content) === '') {
+            throw `${window.appLangs.message.errorEmptyContent}`;
+        }
+        return true;
+    };
     let checkButtonFormSubmit = (e, hide) => {
         $("button[type='submit']", e).attr('disabled', !hide);
     };
@@ -152,6 +214,9 @@ window.app = () => {
     };
     let init = () => {
         let pathname = window.location.pathname;
+        if (pathname === '/') {
+            messageBoard();
+        }
         if (pathname === '/user/login') {
             userLogin();
         }
