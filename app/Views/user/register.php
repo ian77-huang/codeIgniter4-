@@ -1,5 +1,7 @@
 <?= $this->extend('layouts/frontend') ?>
 
+<?php /** @var array{headerName: string, tokenName: string, hash: string} $csrf */ ?>
+
 <?= $this->section('scripts') ?>
 <script>
     window.appCsrf = {
