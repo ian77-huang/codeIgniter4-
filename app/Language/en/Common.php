@@ -6,4 +6,7 @@ return [
         "register" => "Register",
         "login" => "Login"
     ],
+    "language" => [
+        "switch" => "Switch language",
+    ],
 ];

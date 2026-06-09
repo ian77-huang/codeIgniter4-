@@ -4,6 +4,7 @@ use CodeIgniter\Router\RouteCollection;
 
 /** @var RouteCollection $routes */
 $routes->get('/', 'Home::index');
+$routes->get('language/(:segment)', 'Language::index/$1');
 
 $routes->group('api', static function ($routes) {
     $routes->group('user', ['namespace' => 'App\Controllers\Api\User'], static function ($routes) {

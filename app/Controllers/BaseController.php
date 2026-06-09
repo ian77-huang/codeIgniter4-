@@ -5,6 +5,7 @@ namespace App\Controllers;
 use CodeIgniter\Controller;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
+use Config\App;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -41,5 +42,11 @@ abstract class BaseController extends Controller
 
         // Preload any models, libraries, etc, here.
         // $this->session = service('session');
+        $locale = session()->get('locale');
+        $supportedLocales = config(App::class)->supportedLocales;
+
+        if (in_array($locale, $supportedLocales, true)) {
+            $this->request->setLocale($locale);
+        }
     }
 }

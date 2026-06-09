@@ -62,6 +62,11 @@
                     </li>
                 </ul>
                 <div class="d-flex align-items-center gap-3">
+                    <?php $locale = service('request')->getLocale(); ?>
+                    <?php $nextLocale = $locale === 'en' ? 'zh-TW' : 'en'; ?>
+                    <a href="/language/<?= esc($nextLocale, 'attr') ?>" class="link-offset-2 link-underline link-underline-opacity-0" aria-label="<?= lang('Common.language.switch') ?>">
+                        <?= $locale === 'en' ? '繁體中文' : 'English' ?>
+                    </a>
                     <?php if (auth_service()->isLoggedIn()): ?>
                         <a id="linkUserLogin" href="/user/logout" class="link-offset-2 link-underline link-underline-opacity-0" aria-label=" <?= lang('Auth.title.logout') ?>">
                             <?= lang('Auth.title.logout') ?>
